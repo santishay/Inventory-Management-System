@@ -1,2 +1,15 @@
 # Inventory-Management-System
 Flask based inventory tracking system with real time stock management, logging, and dashboard analytics
+
+## Tech Stack
+- **Backend:** Flask (Python)
+- **Database:** SQL Server (Running in Docker)
+- **Frontend:** Bootstrap 5 & JavaScript
+
+## Setup
+1. Clone the repository.
+2. Ensure Docker is running with the SQL Server container.
+3. Run the scripts in `/sql_scripts` to initialize the database.
+4. Create a `.env` file with your `DB_PASSWORD`.
+5. Run `pip install -r requirements.txt`.
+6. Run `python app.py`.
