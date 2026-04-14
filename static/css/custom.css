@@ -1,0 +1,126 @@
+
+/* General CSS */
+
+#inventoryTable tbody {
+    opacity: 1;
+    transition: opacity 0.25s ease;
+}
+
+#inventoryTable tbody.fade-out {
+    opacity: 0;
+}
+
+.kpi-card {
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+}
+.dropdown-menu {
+    min-width: 150px;
+}
+.table-secondary .btn {
+    opacity: 1 !important;
+}
+/* Allow the dropdown to overflow the responsive table container */
+.table-responsive {
+    overflow: visible !important;
+}
+
+/* Ensure the table itself doesn't clip the bottom row's menu */
+#inventoryTable {
+    margin-bottom: 150px; /* Adds invisible space at the bottom so the menu has room to float */
+}
+
+/* Remove the margin if the table is empty or has many rows */
+#inventoryTable:has(tr:nth-child(5)) {
+    margin-bottom: 0;
+}
+
+/* 
+Styling for dashboard.html
+*/
+
+/* Dashboard Search Bar */
+.search-wrapper {
+    max-width: 600px;
+}
+
+/* Dashboard Interactive Elements */
+.kpi-card, .copy-location {
+    cursor: pointer;
+}
+
+/* Ensures dropdown menus in tables sit above other elements */
+.dropdown-z-high {
+    z-index: 1060;
+}
+
+/* Initial state for the min-stock form toggle */
+#minStockWrapper {
+    display: none;
+}
+
+/* 
+Styling for items.html
+*/
+
+.scrollable-log {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Keeps the right column `actions in view while scrolling logs */
+.sticky-offset {
+    position: sticky;
+    top: 20px;
+}
+
+.qr-img {
+    max-height: 200px;
+}
+
+/* Prevents the pending quantity text from shifting the buttons */
+.min-w-80 {
+    min-width: 80px;
+} 
+
+.btn-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    padding: 0;
+}
+
+#deltaDisplay {
+    display: inline-block;
+    min-width: 60px;
+}
+
+#quantity-adjustment-section {
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+/* Restores the 50x50 circular buttons */
+.btn-qty-adjust {
+    width: 50px !important;
+    height: 50px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Restores the fixed width for the pending number to prevent layout shifting */
+.qty-delta-wrapper {
+    min-width: 80px;
+}

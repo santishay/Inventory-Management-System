@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid p-3" style="min-height:100vh;">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+
+    <!-- LEFT: Name + ID + Status -->
+    <div>
+        <h2 class="mb-1">
+            {{ item.item_name }}
+            <small class="text-muted">#{{ item.item_id }}</small>
+        </h2>
+
+        <!-- Status Pill -->
+        {% if item.status == "Active" %}
+            <span class="badge bg-success fs-6">Active</span>
+        {% elif item.status == "Pending" %}
+            <span class="badge bg-warning text-dark fs-6">Pending</span>
+        {% else %}
+            <span class="badge bg-secondary fs-6">Archived</span>
+        {% endif %}
+    </div>
+
+    <!-- RIGHT: Actions -->
+    <div class="d-flex gap-2">
+        <a href="/dashboard" class="btn btn-secondary">Back</a>
+    </div>
+
+</div>
+<div class="row">
+
+    <!-- LEFT COLUMN (Details) -->
+    <div class="col-md-7">
+
+        <!-- Details Card -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Details</span>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editItemModal">
+                    Edit Item
+                </button>
+            </div>
+            <div class="card-body">
+
+                <p><strong>Description:</strong><br>{{ item.description }}</p>
+
+                <p>
+                    <strong>Location:</strong>
+                    {{ item.location }}
+                    <a href="#" class="ms-2 text-primary" data-bs-toggle="modal" data-bs-target="#editItemModal">
+                        Change
+                    </a>
+                </p>
+
+                <p><strong>QR ID:</strong> {{ item.qr_id }}</p>
+
+                {% if item.unit_cost %}
+                <div class="text-muted small mt-2">
+                    Unit Cost: ${{ "%.2f"|format(item.unit_cost) }}<br>
+                    Total Value: <strong>${{ "%.2f"|format(item.quantity * item.unit_cost) }}</strong>
+                </div>
+                {% else %}
+                <div class="text-muted small mt-2">
+                    No pricing set
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Recent History</span>
+                <a href="/items/{{ item.item_id }}/export-logs" class="btn btn-sm btn-outline-info">
+                    <i class="bi bi-download"></i> Export CSV
+                </a>
+            </div>
+            <div class="card-body p-0">
+
+                <ul class="list-group list-group-flush" style="max-height:400px; overflow-y:auto;">
+                    {% for log in logs %}
+                    <li class="list-group-item">
+
+                        <strong
+                        class="
+                        {% if 'Move' in log.action_type %} text-primary
+                        {% elif 'Delete' in log.action_type %} text-danger
+                        {% elif 'Create' in log.action_type %} text-success
+                        {% else %} text-secondary
+                        {% endif %}
+                        ">
+                            {{ log.action_type }}
+                        </strong>
+
+                        {% if log.quantity_changed != 0 %}
+                            <br>Qty: {{ log.quantity_changed }}
+                        {% endif %}
+
+                        {% if log.old_location %}
+                            <br>From: {{ log.old_location }}
+                        {% endif %}
+
+                        {% if log.new_location %}
+                            <br>To: {{ log.new_location }}
+                        {% endif %}
+
+                        <div class="text-muted small mt-1">
+                            {{ log.timestamp }}
+                        </div>
+
+                    </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN (Actions) -->
+    <div class="col-md-5">
+
+        <!-- Sticky Wrapper -->
+        <div style="position: sticky; top: 20px;">
+
+            <!-- QR Code -->
+            <div class="card mb-4 text-center">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>QR Code</span>
+                    <a href="/items/{{item.item_id}}/print" target="_blank" class="btn btn-sm btn-outline-dark">
+                        Print QR
+                    </a>
+                </div>
+                <div class="card-body">
+                    <img src="/qr/{{item.item_id}}?t={{ item.item_id }}" class="img-fluid" style="max-height:200px;">
+                </div>
+            </div>
+
+            <!-- Quantity Control -->
+            <div class="card mb-4 text-center shadow-sm">
+                <div class="card-header bg-light">Quantity Adjustment</div>
+                <div class="card-body">
+                    <div id="quantity-adjustment-section" data-starting-qty="{{ item.quantity }}">
+                        
+                        <div class="text-muted small mb-1">Current Stock</div>
+                        <h3 class="text-secondary">{{ item.quantity }}</h3>
+
+                        <div class="d-flex justify-content-center align-items-center gap-4 my-3">
+                            <button type="button" id="btn-minus" class="btn btn-outline-danger btn-lg rounded-circle btn-qty-adjust">-</button>
+                            
+                            <div class="text-center qty-delta-wrapper">
+                                <span id="deltaDisplay" class="display-6 fw-bold text-primary">0</span>
+                                <div class="text-muted small">Pending</div>
+                            </div>
+                            
+                            <button type="button" id="btn-plus" class="btn btn-outline-success btn-lg rounded-circle btn-qty-adjust">+</button>
+                        </div>
+
+                        <form action="/items/{{item.item_id}}/adjust-quantity" method="POST">
+                            <input type="hidden" name="quantity_change" id="finalDelta" value="0">
+                            
+                            <button type="submit" id="saveBtn" class="btn btn-primary w-100 btn-lg" disabled>
+                                Save Changes <span id="newTotalPreview"></span>
+                            </button>
+                        </form>
+
+                        <div class="mt-2">
+                            <a href="#" id="btn-reset" class="text-decoration-none small text-muted">Reset</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Extra Actions -->
+            <div class="card mb-4 text-center">
+                <div class="card-header">Actions</div>
+                <div class="card-body d-flex flex-column gap-2">
+
+                    <form method="POST" action="/items/{{item.item_id}}/delete">
+                        <button class="btn btn-outline-danger w-100">Archive Item</button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editItemModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="POST" action="/items/{{item.item_id}}/edit">
+
+        <div class="modal-header">
+          <h5>Edit Item</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <label>Name</label>
+          <input type="text" name="item_name" class="form-control mb-2" value="{{item.item_name}}">
+
+          <label>Description</label>
+          <textarea name="description" class="form-control mb-2">{{item.description}}</textarea>
+
+          <div class="mb-2">
+            <label class="form-label">Unit Cost (Optional)</label>
+            <input type="number"
+                step="0.01"
+                name="unit_cost"
+                class="form-control"
+                placeholder="e.g. 25.00"
+                value="{{ item.unit_cost or '' }}">
+          </div>
+
+          <label>Location</label>
+          <input type="text" list="locationList" name="location" class="form-control mb-2" value="{{item.location}}" placeholder="Type or select..." autocomplete="off">
+            <datalist id="locationList">
+                {% for loc in locations %}
+                <option value="{{ loc }}">
+                {% endfor %}
+            </datalist>
+
+          <label>Status</label>
+          <select name="status" class="form-control">
+              <option {% if item.status == "Active" %}selected{% endif %}>Active</option>
+              <option {% if item.status == "Pending" %}selected{% endif %}>Pending</option>
+              <option {% if item.status == "Archived" %}selected{% endif %}>Archived</option>
+          </select>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- Java Script -->
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/item_logic.js') }}"></script>
+{% endblock %}
+
+{% endblock %}
