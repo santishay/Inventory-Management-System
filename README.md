@@ -1,6 +1,12 @@
 # Inventory-Management-System
 Flask based inventory tracking system with real time stock management, logging, and dashboard analytics
 
+## Dashboard
+<img width="1440" height="757" alt="Screenshot 2026-04-13 at 9 09 34 PM" src="https://github.com/user-attachments/assets/998ed7e5-c759-44ab-9eea-3529f9ec3c8b" />
+
+## Item Page
+
+
 ## Tech Stack
 - **Backend:** Flask (Python)
 - **Database:** SQL Server (Running in Docker)
