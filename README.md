@@ -1,3 +1,4 @@
+
 # Inventory-Management-System
 Flask based inventory tracking system with real time stock management, logging, and dashboard analytics
 
@@ -15,10 +16,10 @@ Flask based inventory tracking system with real time stock management, logging, 
 6. Run `python app.py`.
 
 ## Dashboard:
-<img width="1440" height="757" alt="Screenshot 2026-04-13 at 9 09 34 PM" src="https://github.com/user-attachments/assets/998ed7e5-c759-44ab-9eea-3529f9ec3c8b" />
+<img width="600" height="757" alt="App Screenshot of Dashboard Page" src="https://github.com/user-attachments/assets/998ed7e5-c759-44ab-9eea-3529f9ec3c8b" />
 
 ## Item Page:
-
+<img width="600" height="724" alt="App Screenshot of Item Page" src="https://github.com/user-attachments/assets/f9f7cde0-547a-4f0e-a9f8-bfe2cf653d8c" />
 
 ## License:
 This project is licensed under the AGPLv3. See the LICENSE file for more details.
