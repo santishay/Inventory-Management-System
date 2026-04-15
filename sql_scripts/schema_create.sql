@@ -22,6 +22,21 @@ BEGIN
 END
 GO
 
+-- Users Table
+IF OBJECT_ID(N'[Warehouse].[Users]', N'U') IS NULL
+BEGIN
+    CREATE TABLE Warehouse.Users (
+        user_id INT IDENTITY(1,1) PRIMARY KEY,
+        username NVARCHAR(50) NOT NULL UNIQUE,
+        password_hash NVARCHAR(255) NOT NULL,
+        role NVARCHAR(20) NOT NULL DEFAULT 'worker', -- admin or worker
+        last_login DATETIME2 NULL,
+        
+        CONSTRAINT CK_User_Role CHECK (role IN ('admin', 'worker'))
+    );
+END
+GO
+
 -- Inventory Table
 IF OBJECT_ID(N'[Warehouse].[Inventory]', N'U') IS NULL
 BEGIN
