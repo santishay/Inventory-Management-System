@@ -14,13 +14,11 @@ Flask based inventory tracking system with real time stock management, logging, 
 - ODBC Driver 18 for SQL Server: Installed on the host machine.
 
 ## Setup:
-1. Clone the repository.
-2. Ensure Docker is running with the SQL Server container.
-3. Install dependencies: Run pip install -r requirements.txt.
-4. Create a .env file: Add DB_PASSWORD="[your_password]" (Ensure no spaces around = and use quotes).
-5. Initialize Database: Run the scripts in /sql_scripts sequentially (Schema first, then Tables/Data).
-6. Run `python app.py`.
-7. Access the App: Open your browser and go to http://127.0.0.1:5050.
+1. Clone the repo and make sure your Docker SQL container is running.
+2. Run pip install -r requirements.txt to install dependencies.
+3. Create a .env file in the root folder with DB_PASSWORD="[your_password]". Make sure there are not any spaces.
+4. Run the SQL scripts in /sql_scripts (do them in order: schema, tables, data).
+5. Launch by running python app.py and open a browser to 127.0.0.1:5050.
 
 ## Application Pictures
 <table>
