@@ -29,3 +29,6 @@ Database/
 
 # Logs
 *.log
+
+# Temporary setup scripts
+create_admin.py

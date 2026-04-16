@@ -28,17 +28,56 @@ Read/Write Operations for Database and Website
 ## Read Operations
 ## ------------
 
+def get_user_by_username(username):
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT user_id, username, password_hash, role 
+        FROM Warehouse.Users 
+        WHERE username = ?
+        """, (username,))
+    
+    row = cursor.fetchone()
+    conn.close()
+    
+    if row:
+        return {
+            "user_id": row[0],
+            "username": row[1],
+            "password_hash": row[2],
+            "role": row[3]
+        }
+    return None
+
+def get_user_by_id(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT user_id, username, role 
+        FROM Warehouse.Users 
+        WHERE user_id = ?
+        """, (user_id,))
+    
+    row = cursor.fetchone()
+    conn.close()
+    
+    if row:
+        return {"user_id": row[0], "username": row[1], "role": row[2]}
+    return None
+
 def get_inventory_logs(item_id):
 
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT log_id, action_type, quantity_changed, old_location, new_location, log_timestamp
-    FROM Warehouse.InventoryLogs
-    WHERE item_id = ?
-    ORDER BY log_timestamp DESC
-    """, item_id)
+        SELECT log_id, action_type, quantity_changed, old_location, new_location, log_timestamp
+        FROM Warehouse.InventoryLogs
+        WHERE item_id = ?
+        ORDER BY log_timestamp DESC
+        """, item_id)
 
     rows = cursor.fetchall()
 
@@ -151,10 +190,10 @@ def list_inventory(status=None, search=None):
     cursor = conn.cursor()
 
     query = """
-    SELECT item_id, item_name, description, location, quantity, status, unit_cost, min_stock
-    FROM Warehouse.Inventory
-    WHERE 1=1
-    """
+        SELECT item_id, item_name, description, location, quantity, status, unit_cost, min_stock
+        FROM Warehouse.Inventory
+        WHERE 1=1
+        """
 
     params = []
 
@@ -303,10 +342,10 @@ def create_item(name, description, location, quantity, min_stock=5, unit_cost=No
 def log_inventory_action(cursor, item_id, action, qty_change, old_loc = None, new_loc = None):
     
     cursor.execute("""
-    INSERT INTO Warehouse.Inventorylogs
-    (item_id, action_type, quantity_changed, old_location, new_location)
-    VALUES (?, ?, ?, ?, ?);
-    """, item_id, action, qty_change, old_loc, new_loc)
+        INSERT INTO Warehouse.Inventorylogs
+        (item_id, action_type, quantity_changed, old_location, new_location)
+        VALUES (?, ?, ?, ?, ?);
+        """, item_id, action, qty_change, old_loc, new_loc)
         
 #Soft Delete
 def soft_delete_item(item_id):
@@ -315,11 +354,11 @@ def soft_delete_item(item_id):
 
     try:
         cursor.execute("""
-                       UPDATE Warehouse.Inventory
-                       SET status = 'Archived',
-                       last_updated = SYSDATETIME()
-                       WHERE item_id = ?;
-                       """, (item_id,))
+            UPDATE Warehouse.Inventory
+            SET status = 'Archived',
+            last_updated = SYSDATETIME()
+            WHERE item_id = ?;
+            """, (item_id,))
 
         if cursor.rowcount == 0:
             return False

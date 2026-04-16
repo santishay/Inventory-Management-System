@@ -16,6 +16,8 @@
 
 from flask import Flask, request, render_template, redirect, url_for, send_file, make_response
 from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_login import LoginManager, UserMixin, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from io import BytesIO
 from inventory_methods import *
 import qrcode
@@ -27,8 +29,31 @@ Functionality with Flask
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
+#Login Management
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin):
+    
+    def __init__(self, user_id, username, role):
+        self.id = user_id
+        self.username = username
+        self.role = role
+        
+@login_manager.user_loader
+def load_user(user_id):
+    user_data = get_user_by_id(user_id)
+    
+    if user_data:
+        return User(user_data['user_id'], user_data['username'], user_data['role'])
+    return None
+    
+
 @app.route("/")
 @app.route("/dashboard")
+@login_required
 def dashboard():
     search = request.args.get("search")
     
