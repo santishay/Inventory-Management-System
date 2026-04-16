@@ -14,10 +14,10 @@
 # along with this program. If not, see <https://gnu.org>.
 
 
-from flask import Flask, request, render_template, redirect, url_for, send_file, make_response
+from flask import Flask, request, render_template, redirect, url_for, send_file, make_response, flash
 from werkzeug.middleware.proxy_fix import ProxyFix
-from flask_login import LoginManager, UserMixin, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
+from werkzeug.security import check_password_hash
 from io import BytesIO
 from inventory_methods import *
 import qrcode
@@ -30,6 +30,7 @@ app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
 #Login Management
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -49,7 +50,31 @@ def load_user(user_id):
     if user_data:
         return User(user_data['user_id'], user_data['username'], user_data['role'])
     return None
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        user_data = get_user_by_username(username)
+        
+        #Verify name exists and hash matches
+        if user_data and check_password_hash(user_data['password_hash'], password):
+            user_object = User(user_data['user_id'], user_data['username'], user_data['role'])
+            login_user(user_object)
+            return redirect(url_for('dashboard'))
+        
+        flash('Invalid username or password. Please try again.', 'danger')
+        return redirect(url_for('login'))
+
+    return render_template('login.html')
     
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route("/")
 @app.route("/dashboard")

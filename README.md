@@ -16,7 +16,7 @@ Flask based inventory tracking system with real time stock management, logging, 
 ## Setup:
 1. Clone the repo and make sure your Docker SQL container is running.
 2. Run pip install -r requirements.txt to install dependencies.
-3. Create a .env file in the root folder with DB_PASSWORD="[your_password]". Make sure there are not any spaces.
+3. Create a .env file in the root folder with DB_PASSWORD="[your_db_password]" and SECRET_KEY="[your_long_string_secret_key]". Make sure there are not any spaces. The secret key is created by you.
 4. Run the SQL scripts in /sql_scripts (do them in order: schema, tables, data).
 5. Launch by running python app.py and open a browser to 127.0.0.1:5050.
 
