@@ -24,17 +24,15 @@
 .table-secondary .btn {
     opacity: 1 !important;
 }
-/* Allow the dropdown to overflow the responsive table container */
+
 .table-responsive {
     overflow: visible !important;
 }
 
-/* Ensure the table itself doesn't clip the bottom row's menu */
 #inventoryTable {
-    margin-bottom: 150px; /* Adds invisible space at the bottom so the menu has room to float */
+    margin-bottom: 150px;
 }
 
-/* Remove the margin if the table is empty or has many rows */
 #inventoryTable:has(tr:nth-child(5)) {
     margin-bottom: 0;
 }
@@ -53,12 +51,10 @@ Styling for dashboard.html
     cursor: pointer;
 }
 
-/* Ensures dropdown menus in tables sit above other elements */
 .dropdown-z-high {
     z-index: 1060;
 }
 
-/* Initial state for the min-stock form toggle */
 #minStockWrapper {
     display: none;
 }
@@ -82,7 +78,6 @@ Styling for items.html
     max-height: 200px;
 }
 
-/* Prevents the pending quantity text from shifting the buttons */
 .min-w-80 {
     min-width: 80px;
 } 
@@ -110,7 +105,6 @@ Styling for items.html
     background-color: #ffffff;
 }
 
-/* Restores the 50x50 circular buttons */
 .btn-qty-adjust {
     width: 50px !important;
     height: 50px !important;
@@ -120,7 +114,62 @@ Styling for items.html
     justify-content: center;
 }
 
-/* Restores the fixed width for the pending number to prevent layout shifting */
 .qty-delta-wrapper {
     min-width: 80px;
+}
+
+/* 
+Styling for login.html
+*/
+
+.login-container {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.login-card-body {
+    padding: 3rem;
+}
+
+/* Form Elements */
+.login-brand-header {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.form-label-custom {
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.input-field-custom {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.input-field-custom:focus {
+    background-color: #fff;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+.btn-login-submit {
+    padding: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 1rem;
 }
