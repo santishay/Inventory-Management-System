@@ -14,10 +14,11 @@
 # along with this program. If not, see <https://gnu.org>.
 
 
-from flask import Flask, request, render_template, redirect, url_for, send_file, make_response, flash
-from werkzeug.middleware.proxy_fix import ProxyFix
+from flask import Flask, request, render_template, redirect, url_for, send_file, make_response, session, flash
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
+from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash
+from datetime import timedelta
 from io import BytesIO
 from inventory_methods import *
 import qrcode
@@ -31,10 +32,13 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
 #Login Management
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
 
 login_manager = LoginManager()
+login_manager.session_protection = "strong"
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
 
 class User(UserMixin):
     
@@ -62,6 +66,9 @@ def login():
         #Verify name exists and hash matches
         if user_data and check_password_hash(user_data['password_hash'], password):
             user_object = User(user_data['user_id'], user_data['username'], user_data['role'])
+            
+            session.permanent = True
+            
             login_user(user_object)
             return redirect(url_for('dashboard'))
         
