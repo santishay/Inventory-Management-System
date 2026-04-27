@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBtn.disabled = (currentDelta === 0);
         newTotalPreview.innerText = currentDelta !== 0 ? `(New Total: ${startingQty + currentDelta})` : '';
 
+        btnMinus.disabled = (newTotal <= 0);
+
         //Update colors based on the direction of change
         display.classList.remove('text-success', 'text-danger', 'text-primary');
         if (currentDelta > 0) display.classList.add('text-success');
@@ -41,7 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Event Listeners
     if (btnPlus) btnPlus.addEventListener('click', () => { currentDelta++; refreshUI(); });
-    if (btnMinus) btnMinus.addEventListener('click', () => { currentDelta--; refreshUI(); });
+    if (btnMinus) btnMinus.addEventListener('click', () => { 
+        const newTotal = startingQty + currentDelta;
+        if (newTotal <= 0) return;
+
+        currentDelta--; 
+        refreshUI(); 
+    });
     
     if (btnReset) {
         btnReset.addEventListener('click', (e) => {
@@ -50,4 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
             refreshUI();
         });
     }
+    
+    refreshUI();
 });

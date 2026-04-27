@@ -451,6 +451,7 @@ def update_item_comprehensive(item_id, form_data):
 def adjust_quantity_log(item_id, quantity_change):
     conn = get_connection()
     cursor = conn.cursor()
+    
     try:
         #Update quantity directly in SQL to prevent race conditions
         cursor.execute("""
@@ -458,10 +459,17 @@ def adjust_quantity_log(item_id, quantity_change):
             SET quantity = quantity + ?,
                 last_updated = SYSDATETIME()
             WHERE item_id = ?
-        """, (quantity_change, item_id))
+            AND quantity + ? >= 0
+        """, (quantity_change, item_id, quantity_change))
+
+        if cursor.rowcount == 0:
+            conn.rollback()
+            return False
 
         log_inventory_action(cursor, item_id, 'Adjust', quantity_change)
         
         conn.commit()
+        return True
+        
     finally:
         conn.close()

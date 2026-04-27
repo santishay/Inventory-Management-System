@@ -173,8 +173,11 @@ def create_item_modal():
 def adjust_quantity(item_id):
     
     quantity_change = int(request.form["quantity_change"])
-    adjust_quantity_log(item_id, quantity_change)
-
+    success = adjust_quantity_log(item_id, quantity_change)
+    
+    if not success:
+        flash("Cannot adjust quantity below zero.", "error")
+        
     return redirect(url_for("view_item", item_id=item_id))
 
 @app.route("/items/<int:item_id>/edit", methods=["GET","POST"])
