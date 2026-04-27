@@ -1,4 +1,5 @@
 import pyodbc, csv, io, os
+from datetime import timezone
 from dotenv import load_dotenv
 
 """
@@ -90,7 +91,7 @@ def get_inventory_logs(item_id):
             "quantity_changed": row.quantity_changed,
             "old_location": row.old_location,
             "new_location": row.new_location,
-            "timestamp": row.log_timestamp.strftime("%b %d, %Y - %I:%M %p") if row.log_timestamp else "N/A"
+            "timestamp": row.log_timestamp.replace(tzinfo=timezone.utc).isoformat() if row.log_timestamp else None
         })
 
     conn.close()

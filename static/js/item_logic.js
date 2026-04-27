@@ -2,6 +2,7 @@
  * item_logic.js
  * Handles front-end quantity adjustments for the SnekSort Inventory system.
  * Uses a 'delta' system to calculate changes before sending to the Flask backend.
+ * Also handles time in "Recent History"
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,14 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Core function to change UI with currentDelta
     function refreshUI() {
+        const newTotal = startingQty + currentDelta;
+        btnMinus.disabled = (newTotal <= 0);
+
         display.innerText = (currentDelta > 0 ? '+' : '') + currentDelta;
         hiddenInput.value = currentDelta;
 
         //Save button and New Total preview
         saveBtn.disabled = (currentDelta === 0);
         newTotalPreview.innerText = currentDelta !== 0 ? `(New Total: ${startingQty + currentDelta})` : '';
-
-        btnMinus.disabled = (newTotal <= 0);
 
         //Update colors based on the direction of change
         display.classList.remove('text-success', 'text-danger', 'text-primary');
@@ -58,6 +60,30 @@ document.addEventListener('DOMContentLoaded', () => {
             refreshUI();
         });
     }
-    
+
     refreshUI();
+
+    //Time Handling
+    const timeElements = document.querySelectorAll('.log-time');
+
+    timeElements.forEach(element => {
+        const utcString = element.dataset.timestamp;
+
+        if (!utcString) {
+            element.innerText = "N/A";
+            return;
+        }
+
+        const date = new Date(utcString);
+
+        element.innerText = date.toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: '2-digit',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+
+    });
 });
