@@ -159,6 +159,7 @@
                         </div>
 
                         <form action="/items/{{item.item_id}}/adjust-quantity" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="quantity_change" id="finalDelta" value="0">
                             
                             <button type="submit" id="saveBtn" class="btn btn-primary w-100 btn-lg" disabled>
@@ -180,6 +181,7 @@
                 <div class="card-body d-flex flex-column gap-2">
 
                     <form method="POST" action="/items/{{item.item_id}}/delete">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button class="btn btn-outline-danger w-100">Archive Item</button>
                     </form>
 
@@ -198,7 +200,7 @@
     <div class="modal-content">
 
       <form method="POST" action="/items/{{item.item_id}}/edit">
-
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="modal-header">
           <h5>Edit Item</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

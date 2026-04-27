@@ -20,6 +20,7 @@
             {% endwith %}
 
             <form method="POST" action="{{ url_for('login') }}" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="mb-3">
                     <label for="username" class="form-label-custom">Username</label>
                     <input type="text" 

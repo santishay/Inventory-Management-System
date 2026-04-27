@@ -1,3 +1,8 @@
+/**
+ * dashboard_logic.js
+ * Handles front-end scanners and filtering for the SnekSort Inventory system.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
@@ -56,11 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lowStockToggle.addEventListener('change', function() {
         if (this.checked) {
-            // Show field and set a default threshold
+            //Show field and set a default threshold
             minStockWrapper.style.display = 'block';
             minStockInput.value = "5"; 
         } else {
-            // Hide field and reset to 0 (effectively disabling the alert)
             minStockWrapper.style.display = 'none';
             minStockInput.value = "0";
         }
@@ -189,10 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    //Start scanner when modal opens
+    //Start scanner when modal opens and Stope when closed
     document.getElementById('qrScanner').addEventListener('shown.bs.modal', startScanner);
 
-    //Stop scanner when modal closes
     document.getElementById('qrScanner').addEventListener('hidden.bs.modal', stopScanner);
 
 
@@ -202,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //Automatically reset the form whenever the modal is closed/hidden
     document.getElementById('addItemModal').addEventListener('hidden.bs.modal', function () {
         this.querySelector('form').reset();
-        // Also hide the min-stock wrapper if it was toggled on
         document.getElementById('minStockWrapper').style.display = 'none';
     });
 });

@@ -16,6 +16,7 @@
 
 from flask import Flask, request, render_template, redirect, url_for, send_file, make_response, session, flash
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
+from flask_wtf.csrf import CSRFProtect
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash
 from datetime import timedelta
@@ -33,6 +34,8 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 #Login Management
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
+
+csrf = CSRFProtect(app)
 
 login_manager = LoginManager()
 login_manager.session_protection = "strong"
